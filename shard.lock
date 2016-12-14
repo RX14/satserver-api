@@ -1,0 +1,26 @@
+version: 1.0
+shards:
+  cute:
+    github: Papierkorb/cute
+    commit: fae7e23775181855f6dd77a84a2cc8e8ad8da2d4
+
+  db:
+    github: crystal-lang/crystal-db
+    version: 0.3.3
+
+  msgpack:
+    github: benoist/msgpack-crystal
+    commit: ea1093e36bcb6e4ee04cbb16a242393983a7e152
+
+  pg:
+    github: will/crystal-pg
+    commit: 4a67fe5899685ea04f65dbfd4711deb6b688cd30
+
+  predict:
+    github: RX14/predict.cr
+    commit: f68fc46aa6c6936c01a147149dc2718eb02a3b81
+
+  radix:
+    github: luislavena/radix
+    version: 0.3.5
+

@@ -1,0 +1,25 @@
+name: satserver
+version: 0.1.0
+
+authors:
+  - RX14 <chris@rx14.co.uk>
+
+dependencies:
+  predict:
+    github: RX14/predict.cr
+    branch: master
+    # version: 0.1.1
+  radix:
+    github: luislavena/radix
+    version: 0.3.5
+  pg:
+    github: will/crystal-pg
+    branch: master
+  msgpack:
+    github: benoist/msgpack-crystal
+    branch: master
+  cute:
+    github: Papierkorb/cute
+    branch: master
+
+license: MIT
