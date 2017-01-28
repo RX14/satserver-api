@@ -5,7 +5,8 @@ class Config
     location: Location,
     http_port: Int32,
     database_url: String,
-    tle_file: String
+    tle_file: String,
+    storage_dir: String
   )
 
   class Location

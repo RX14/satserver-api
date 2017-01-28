@@ -31,4 +31,28 @@ struct PassController
   def list_upcoming
     list where: "pass.start_time > now()"
   end
+
+  def files
+    query = <<-SQL
+      SELECT pass_id, type, filename, processing_log
+      FROM files AS file
+      WHERE pass_id = $1
+      SQL
+
+    pass_id = params["pass"]
+    passes = db.query_all(query, pass_id) do |rs|
+      {
+        pass: {
+          id: rs.read(String),
+        },
+        type:           rs.read(Int16),
+        url:            "/api/v1/files/#{rs.read(String)}",
+        processing_log: rs.read(String?),
+      }
+    end
+
+    response.content_type = "application/json"
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    passes.to_json(response)
+  end
 end

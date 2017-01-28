@@ -13,13 +13,17 @@ class WebServer
   end
 
   Cute.signal manual_schedule_update
-  Cute.signal pass_complete
+  Cute.signal pass_complete(pass_id : String)
 
   private def draw_routes
     route "GET", "/api/v1/satellites", SatelliteController.list
 
     route "GET", "/api/v1/passes", PassController.list
     route "GET", "/api/v1/passes/upcoming", PassController.list_upcoming
+
+    route "GET", "/api/v1/passes/:pass/files", PassController.files
+
+    route "GET", "/api/v1/files/:filename", FileController.serve
   end
 
   private def run

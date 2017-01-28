@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS passes, satellites;
+DROP TABLE IF EXISTS passes, satellites, files;
 
 CREATE OR REPLACE FUNCTION seconds(timestamp with time zone) RETURNS timestamp
 AS $$ SELECT date_trunc('second', $1 at time zone 'UTC') $$
@@ -18,3 +18,11 @@ CREATE TABLE passes (
     max_elevation     real NOT NULL
 );
 CREATE UNIQUE INDEX passes_unique_time ON passes(satellite_catnum, seconds(start_time));
+
+CREATE TABLE files (
+    pass_id           uuid REFERENCES passes (id),
+    type              smallint,
+    filename          text NOT NULL,
+    processing_log    text,
+    PRIMARY KEY (pass_id, type)
+);
