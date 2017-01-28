@@ -4,7 +4,7 @@ struct SatelliteController
   def list
     query = <<-SQL
       SELECT catalog_number, name
-      FROM SATELLITES
+      FROM satellites
       SQL
 
     passes = db.query_all(query) do |rs|

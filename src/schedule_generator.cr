@@ -1,6 +1,7 @@
 require "predict"
 require "json"
 require "msgpack"
+require "secure_random"
 
 class ScheduleGenerator
   def initialize(@config : Config, @db : DB::Database)
@@ -97,11 +98,13 @@ class ScheduleGenerator
     @schedule.each do |pass|
       query = <<-SQL
         INSERT INTO passes
-        (satellite_catnum, start_time, end_time, max_elevation) VALUES ($1, $2, $3, $4)
+        (id, satellite_catnum, start_time, end_time, max_elevation) VALUES ($1, $2, $3, $4, $5)
         ON CONFLICT (satellite_catnum, seconds(start_time))
-          DO UPDATE SET start_time = $2, end_time = $3, max_elevation = $4
+          DO UPDATE SET start_time = $3, end_time = $4, max_elevation = $5
+        RETURNING id
         SQL
-      @db.exec query, pass.satellite_catnum, pass.start_time, pass.end_time, pass.max_elevation
+      args = {pass.id, pass.satellite_catnum, pass.start_time, pass.end_time, pass.max_elevation}
+      pass.id = @db.query_one(query, *args, as: String)
     end
   end
 
@@ -119,6 +122,7 @@ class ScheduleGenerator
 
   class Pass
     MessagePack.mapping({
+      id:               String,
       satellite_catnum: Int32,
       start_time:       {type: Time, converter: CrystalTimeConverter},
       end_time:         {type: Time, converter: CrystalTimeConverter},
@@ -137,6 +141,7 @@ class ScheduleGenerator
 
     def initialize(@satellite_catnum : Int32, @start_time : Time, @end_time : Time,
                    @max_elevation : Float32, @look_angles : Array({Float32, Float32}))
+      @id = SecureRandom.uuid
     end
 
     def self.new(satellite, location, start_time, end_time)

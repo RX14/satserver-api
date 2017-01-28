@@ -6,14 +6,15 @@ LANGUAGE SQL
 IMMUTABLE;
 
 CREATE TABLE satellites (
-    catalog_number  integer PRIMARY KEY,
-    name            text
+    catalog_number    integer PRIMARY KEY,
+    name              text NOT NULL
 );
 
 CREATE TABLE passes (
-    satellite_catnum  integer REFERENCES satellites(catalog_number),
-    start_time        timestamptz,
-    end_time          timestamptz,
-    max_elevation     real
+    id                uuid PRIMARY KEY,
+    satellite_catnum  integer NOT NULL REFERENCES satellites(catalog_number),
+    start_time        timestamptz NOT NULL,
+    end_time          timestamptz NOT NULL,
+    max_elevation     real NOT NULL
 );
-CREATE UNIQUE INDEX passes_pkey ON passes(satellite_catnum, seconds(start_time))
+CREATE UNIQUE INDEX passes_unique_time ON passes(satellite_catnum, seconds(start_time));
