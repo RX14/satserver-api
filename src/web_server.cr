@@ -21,6 +21,7 @@ class WebServer
     route "GET", "/api/v1/passes", PassController.list
     route "GET", "/api/v1/passes/upcoming", PassController.list_upcoming
 
+    route "GET", "/api/v1/passes/:pass", PassController.show
     route "GET", "/api/v1/passes/:pass/files", PassController.files
 
     route "GET", "/api/v1/files/:filename", FileController.serve
