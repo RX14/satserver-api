@@ -50,7 +50,7 @@ class WebServer
 
   private macro route(method, path, location)
     route({{method}}, {{path}}) do |context, params|
-      %controller = {{location.receiver}}.new(context, params, @db)
+      %controller = {{location.receiver}}.new(context, params, @db, @config)
       %controller.{{location.name}}
     end
   end

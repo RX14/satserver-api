@@ -9,12 +9,13 @@ module Util
 end
 
 module Controller
-  def initialize(@context, @params, @db)
+  def initialize(@context, @params, @db, @config)
   end
 
   getter context : HTTP::Server::Context
   getter params : Hash(String, String)
   getter db : DB::Database
+  getter config : Config
 
   def request
     context.request
