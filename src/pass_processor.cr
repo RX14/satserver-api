@@ -68,7 +68,7 @@ class PassProcessor
 
     def wxtoimg_code
       case self
-      when Audio
+      when Raw
         nil
       when MCIR
         "MCIR"

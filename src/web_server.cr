@@ -25,13 +25,14 @@ class WebServer
     route "GET", "/api/v1/passes/:pass/files", PassController.files
 
     route "GET", "/api/v1/files/:filename", FileController.serve
+    route "PUT", "/api/v1/files", FileController.upload
   end
 
   private def run
     handlers = [
       HTTP::ErrorHandler.new,
       HTTP::LogHandler.new,
-      HTTP::DeflateHandler.new,
+      # HTTP::CompressHandler.new,
     ]
     server = HTTP::Server.new("0.0.0.0", 8080, handlers) do |context|
       result = @tree.find("/#{context.request.method}#{context.request.path}")

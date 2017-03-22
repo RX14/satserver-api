@@ -16,6 +16,7 @@ module Controller
   getter params : Hash(String, String)
   getter db : DB::Database
   getter config : Config
+  getter web_server : WebServer
 
   def request
     context.request
