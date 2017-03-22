@@ -10,11 +10,11 @@ shards:
 
   msgpack:
     github: benoist/msgpack-crystal
-    commit: ea1093e36bcb6e4ee04cbb16a242393983a7e152
+    commit: ae46aeab71ed38e836b9056a207a583deb9ea63a
 
   pg:
     github: will/crystal-pg
-    commit: 4a67fe5899685ea04f65dbfd4711deb6b688cd30
+    version: 0.13.2
 
   predict:
     github: RX14/predict.cr
