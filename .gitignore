@@ -4,3 +4,5 @@
 /.crystal/
 /.shards/
 /files/
+/tle_cache.json
+/config.json

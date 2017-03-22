@@ -5,9 +5,17 @@ class Config
     location: Location,
     http_port: Int32,
     database_url: String,
-    tle_file: String,
-    storage_dir: String
+    storage_dir: String,
+    space_track_credentials: SpaceTrackCredentials,
+    satellite_catnums: Array(Int32)
   )
+
+  class SpaceTrackCredentials
+    JSON.mapping(
+      username: String,
+      password: String
+    )
+  end
 
   class Location
     JSON.mapping(

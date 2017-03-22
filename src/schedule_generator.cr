@@ -30,13 +30,42 @@ class ScheduleGenerator
     exit(10)
   end
 
-  private def update_tles
-    tles = Array(Predict::TLE).new
+  private def get_tles
+    puts "Downloading TLEs"
+    post_data = {
+      "identity" => @config.space_track_credentials.username,
+      "password" => @config.space_track_credentials.password,
+      "query"    => "https://www.space-track.org/basicspacedata/query/class/tle_latest/ORDINAL/1/NORAD_CAT_ID/#{@config.satellite_catnums.join(',')}/format/3le/metadata/false",
+    }
 
-    File.open(@config.tle_file, "r") do |file|
-      while tle = Predict::TLE.parse_three_line(file)
-        tles << tle
+    response = HTTP::Client.post_form("https://space-track.org/ajaxauth/login", post_data)
+
+    tle_cache_json = {last_update_time: Time.now.ticks, tles: response.body}.to_json
+    File.write("tle_cache.json", tle_cache_json)
+
+    response.body
+  end
+
+  private def update_tles
+    if File.exists?("tle_cache.json")
+      json = JSON.parse(File.read("tle_cache.json"))
+
+      time = Time.new(json["last_update_time"].as_i64, kind: Time::Kind::Utc)
+
+      if time < Time.now - 12.hours
+        tle_data = get_tles
+      else
+        puts "Using cached TLEs"
+        tle_data = json["tles"].as_s
       end
+    else
+      tle_data = get_tles
+    end
+
+    io = IO::Memory.new(tle_data)
+    tles = Array(Predict::TLE).new
+    while tle = Predict::TLE.parse_three_line(io)
+      tles << tle
     end
 
     @tles = tles
