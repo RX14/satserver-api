@@ -3,7 +3,8 @@ struct PassController
 
   def list(where condition = "true")
     query = <<-SQL
-      SELECT id, satellite_catnum, satellite.name, start_time, end_time, max_elevation
+      SELECT id, satellite_catnum, satellite.name, start_time, end_time, max_elevation,
+             (SELECT count(*) FROM files WHERE pass_id = pass.id) AS file_count
       FROM passes AS pass
       JOIN satellites AS satellite
         ON satellite.catalog_number = pass.satellite_catnum
@@ -20,6 +21,7 @@ struct PassController
         start_time:    rs.read(Time),
         end_time:      rs.read(Time),
         max_elevation: rs.read(Float32),
+        file_count:    rs.read(Int64),
       }
     end
 
