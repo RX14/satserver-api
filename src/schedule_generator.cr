@@ -13,6 +13,8 @@ class ScheduleGenerator
     update_schedule
   end
 
+  getter tles
+
   def update_schedule
     @wait_channel.send nil
   end

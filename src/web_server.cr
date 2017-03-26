@@ -5,7 +5,7 @@ require "cute"
 class WebServer
   alias Route = HTTP::Server::Context, Hash(String, String) -> Nil
 
-  def initialize(@config : Config, @db : DB::Database)
+  def initialize(@config : Config, @db : DB::Database, @schedule_generator : ScheduleGenerator)
     @tree = Radix::Tree(Route).new
     draw_routes
 
@@ -17,6 +17,7 @@ class WebServer
 
   private def draw_routes
     route "GET", "/api/v1/satellites", SatelliteController.list
+    route "GET", "/api/v1/satellites/:satellite/realtime", SatelliteController.realtime
 
     route "GET", "/api/v1/passes", PassController.list
     route "GET", "/api/v1/passes/upcoming", PassController.list_upcoming
@@ -56,7 +57,7 @@ class WebServer
 
   private macro route(method, path, location)
     route({{method}}, {{path}}) do |context, params|
-      %controller = {{location.receiver}}.new(context, params, @db, @config)
+      %controller = {{location.receiver}}.new(context, params, @db, @config, @schedule_generator, self)
       %controller.{{location.name}}
     end
   end
