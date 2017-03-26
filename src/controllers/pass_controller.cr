@@ -34,6 +34,10 @@ struct PassController
     list where: "pass.start_time > now()"
   end
 
+  def list_collected
+    list where: "(SELECT count(*) FROM files WHERE pass_id = pass.id) > 1"
+  end
+
   def show
     query = <<-SQL
       SELECT id, satellite_catnum, satellite.name, start_time, end_time, max_elevation
