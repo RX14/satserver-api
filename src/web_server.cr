@@ -28,6 +28,10 @@ class WebServer
 
     route "GET", "/api/v1/files/:filename", FileController.serve
     route "PUT", "/api/v1/files", FileController.upload
+
+    route "POST", "/api/v1/login", UserController.login
+    route "POST", "/api/v1/logout", UserController.logout
+    route "POST", "/api/v1/register", UserController.register
   end
 
   private def run

@@ -26,3 +26,10 @@ CREATE TABLE files (
     processing_log    text,
     PRIMARY KEY (pass_id, type)
 );
+
+CREATE TABLE users (
+    username          text PRIMARY KEY,
+    password          text,
+    tokens            text[]
+);
+CREATE INDEX tokens_test on users USING GIN(tokens);

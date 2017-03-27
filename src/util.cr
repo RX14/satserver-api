@@ -47,4 +47,37 @@ module Controller
       end
     end
   end
+
+  private def parse_token
+    token = request.headers["Authorization"]?
+    return unless token
+
+    parts = token.split(' ', 2)
+    return unless parts.size == 2
+    return unless "Token" == parts[0]
+
+    parts[1]
+  end
+
+  def check_token
+    token = parse_token
+    return unless token
+
+    users = db.query_one "SELECT count(*) FROM users WHERE tokens @> ARRAY[$1]", token, as: Int64
+    case users
+    when 0
+      nil
+    when 1
+      token
+    else
+      raise "Assertion Failed"
+    end
+  end
+
+  def logged_in_username
+    token = parse_token
+    return unless token
+
+    db.query_one? "SELECT username FROM users WHERE tokens @> ARRAY[$1]", token
+  end
 end
