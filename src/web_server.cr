@@ -12,7 +12,6 @@ class WebServer
     spawn { run }
   end
 
-  Cute.signal manual_schedule_update
   Cute.signal pass_complete(pass_id : String)
 
   private def draw_routes
@@ -32,6 +31,8 @@ class WebServer
     route "POST", "/api/v1/login", UserController.login
     route "POST", "/api/v1/logout", UserController.logout
     route "POST", "/api/v1/register", UserController.register
+
+    route "POST", "/api/v1/update-tles", PassController.update_tles
   end
 
   private def run

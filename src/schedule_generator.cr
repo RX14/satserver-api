@@ -7,23 +7,23 @@ class ScheduleGenerator
   def initialize(@config : Config, @db : DB::Database)
     @tles = Array(Predict::TLE).new
     @schedule = Array(Pass).new
-    @wait_channel = Channel(Nil).new
+    @wait_channel = Channel(Bool).new
 
     spawn { run }
-    update_schedule
+    update_schedule(force: false)
   end
 
   getter tles
 
-  def update_schedule
-    @wait_channel.send nil
+  def update_schedule(*, force)
+    @wait_channel.send force
   end
 
   private def run
     loop do
-      @wait_channel.receive
+      force = @wait_channel.receive
 
-      update_tles
+      update_tles(force: force)
       generate_schedule
       send_schedule
     end
@@ -48,8 +48,8 @@ class ScheduleGenerator
     response.body
   end
 
-  private def update_tles
-    if File.exists?("tle_cache.json")
+  private def update_tles(*, force)
+    if File.exists?("tle_cache.json") && !force
       json = JSON.parse(File.read("tle_cache.json"))
 
       time = Time.new(json["last_update_time"].as_i64, kind: Time::Kind::Utc)

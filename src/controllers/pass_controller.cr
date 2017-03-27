@@ -89,4 +89,9 @@ struct PassController
     response.headers["Access-Control-Allow-Origin"] = "*"
     passes.to_json(response)
   end
+
+  def update_tles
+    return response.respond_with_error("Not Logged In", 401) unless check_token
+    schedule_generator.update_schedule(force: true)
+  end
 end
